@@ -1,10 +1,10 @@
 {
   "name": "gulp-wpmvc",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "Gulp package for Wordpress MVC development.",
   "main": "lib\\wpmvc.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -32,5 +32,8 @@
     "gulp-zip": "^3.2.0",
     "node-sass": "^3.4.2"
   },
-  "private": false
+  "private": false,
+  "devDependencies": {
+    "mocha": "^3.4.2"
+  }
 }
