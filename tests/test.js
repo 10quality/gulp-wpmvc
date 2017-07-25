@@ -5,7 +5,7 @@
 var assert = require('assert');
 var fs = require('fs');
 var gulp = require('gulp');
-var wpmvc = require('../lib/wpmvc');
+var wpmvc = require('../index');
 // Load package JSON as config file.
 var config = JSON.parse(fs.readFileSync('./package.json'));
 
