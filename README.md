@@ -3,10 +3,8 @@
 Predefined gulp tasks for Wordpress MVC (WPMVC).
 
 ## Requirements
-* node >= v6.0.0
+* node >= v0.12.0
 * npm >= v2.3.0
-
-**NOTE:** If using *node* `v0.12.0` use release `v1.0.9`.
 
 ## Troubleshooting
 If experiencing issues with sass and other modules, use [nvm](https://github.com/creationix/nvm) or [nvm for Windows](https://github.com/coreybutler/nvm-windows) to downgrade your version of **NodeJS**.
