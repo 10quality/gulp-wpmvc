@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 /**
@@ -22,6 +22,7 @@
  * @since 1.0.6 Added prebuild tasks to enable special customization before zip and build are made.
  * @since 1.0.7 Added prezip taks to enable special customization before zip is made.
  * @since 1.1.0 Node compatibility changes.
+ * @since 1.1.1 Deletes bin vendor folder.
  *
  * @param object gulp   Gulp project application.
  * @param array  config Configuration file.
@@ -96,10 +97,12 @@ module.exports = function(gulp, config)
             './builds/staging/'+config.name+'/assets/{raw,css,js}/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
             './builds/staging/'+config.name+'/vendor/nikic/**/*',
+            './builds/staging/'+config.name+'/vendor/bin/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests/**/*',
             './builds/staging/'+config.name+'/assets/{raw,css,js}',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands,nikic}',
             './builds/staging/'+config.name+'/vendor/nikic',
+            './builds/staging/'+config.name+'/vendor/bin',
             './builds/staging/'+config.name+'/vendor/10quality/wp-file/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
         ]);
     });
