@@ -22,12 +22,12 @@
  * @since 1.0.6 Added prebuild tasks to enable special customization before zip and build are made.
  * @since 1.0.7 Added prezip taks to enable special customization before zip is made.
  * @since 1.1.0 Node compatibility changes.
- * @since 1.1.1 Deletes bin vendor folder.
+ * @since 1.2.0 Removes "bin" folders, adds wordpress.org updates via SVN.
  *
  * @param object gulp   Gulp project application.
  * @param array  config Configuration file.
  */
-module.exports = function(gulp, config)
+module.exports = function(gulp, config, wordpressOrg)
 {
     // Dependencies.
     if (!gulp) gulp = require('gulp');
@@ -94,12 +94,12 @@ module.exports = function(gulp, config)
     // Build clean pre zip
     gulp.task('build-prezip', ['build-files'], function() {
         return del([
-            './builds/staging/'+config.name+'/assets/{raw,css,js}/**/*',
+            './builds/staging/'+config.name+'/assets/{raw,css,js,wordpress}/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
             './builds/staging/'+config.name+'/vendor/nikic/**/*',
             './builds/staging/'+config.name+'/vendor/bin/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests/**/*',
-            './builds/staging/'+config.name+'/assets/{raw,css,js}',
+            './builds/staging/'+config.name+'/assets/{raw,css,js,wordpress}',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands,nikic}',
             './builds/staging/'+config.name+'/vendor/nikic',
             './builds/staging/'+config.name+'/vendor/bin',
@@ -119,6 +119,30 @@ module.exports = function(gulp, config)
             './builds/staging',
         ]);
     });
+    // Build trunk
+    gulp.task('build-trunk', ['clean-trunk'], function() {
+        return gulp.src('./builds/staging/'+config.name+'/**/*')
+            .pipe(gulp.dest('svn/trunk'));
+    });
+    // Clean truck
+    gulp.task('clean-trunk', config.prezip, function() {
+        return del([
+            './svn/trunk/**/*',
+        ]);
+    });
+    // Build trunk
+    gulp.task('build-assets', ['build-trunk'], function() {
+        return gulp.src('./assets/wordpress/**/*')
+            .pipe(gulp.dest('svn/assets'));
+    });
+    // Cleans SVN
+    gulp.task('svn-clean', ['build-assets'], function() {
+        return del([
+            './builds/staging/**/*',
+            './builds/staging',
+        ]);
+    });
+    // --------------------
     // DEV
     gulp.task('default', [
         'styles',
@@ -139,4 +163,22 @@ module.exports = function(gulp, config)
         'build-zip',
         'build-clean',
     ]);
+    if (wordpressOrg
+        && wordpressOrg.root
+        && wordpressOrg.username
+        && wordpressOrg.password
+    ) {
+        // Wordpress task
+        gulp.task('wordpress', [
+            'styles',
+            'scripts',
+            'build-files',
+            'jsmin',
+            'cssmin',
+            'clean-trunk',
+            'build-trunk',
+            'build-assets',
+            'svn-clean',
+        ]);
+    }
 }
