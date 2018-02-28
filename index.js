@@ -22,7 +22,7 @@
  * @since 1.0.6 Added prebuild tasks to enable special customization before zip and build are made.
  * @since 1.0.7 Added prezip taks to enable special customization before zip is made.
  * @since 1.1.0 Node compatibility changes.
- * @since 1.2.0 Removes "bin" folders, adds woocommerce support, adds wordpress.org updates via SVN.
+ * @since 1.2.0 Removes "bin" folders, prepares wordpress.org SVN.
  *
  * @param object gulp   Gulp project application.
  * @param array  config Configuration file.
@@ -45,7 +45,7 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.prescripts) config.prescripts = [];
     if (!config.prebuild) config.prebuild = ['scripts', 'styles'];
     if (!config.prezip) config.prezip = ['build-prezip', 'jsmin', 'cssmin'];
-    if (!config.rootdirs) config.rootdirs = '{app,assets,vendor,woocommerce,templates}/**/*';
+    if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
 
     // Set GULP tasks
     // SASS
@@ -122,18 +122,18 @@ module.exports = function(gulp, config, wordpressOrg)
     // Build trunk
     gulp.task('build-trunk', ['clean-trunk'], function() {
         return gulp.src('./builds/staging/'+config.name+'/**/*')
-            .pipe(gulp.dest('svn/trunk'));
+            .pipe(gulp.dest('svn/'+wordpressOrg.path+'/trunk'));
     });
     // Clean truck
     gulp.task('clean-trunk', config.prezip, function() {
         return del([
-            './svn/trunk/**/*',
+            './svn/'+wordpressOrg.path+'/trunk/**/*',
         ]);
     });
     // Build trunk
     gulp.task('build-assets', ['build-trunk'], function() {
         return gulp.src('./assets/wordpress/**/*')
-            .pipe(gulp.dest('svn/assets'));
+            .pipe(gulp.dest('svn/'+wordpressOrg.path+'/assets'));
     });
     // Cleans SVN
     gulp.task('svn-clean', ['build-assets'], function() {
@@ -164,7 +164,7 @@ module.exports = function(gulp, config, wordpressOrg)
         'build-clean',
     ]);
     if (wordpressOrg
-        && wordpressOrg.root
+        && wordpressOrg.cwd
         && wordpressOrg.username
         && wordpressOrg.password
     ) {
