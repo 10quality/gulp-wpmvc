@@ -22,7 +22,7 @@
  * @since 1.0.6 Added prebuild tasks to enable special customization before zip and build are made.
  * @since 1.0.7 Added prezip taks to enable special customization before zip is made.
  * @since 1.1.0 Node compatibility changes.
- * @since 1.2.0 Removes "bin" folders, adds wordpress.org updates via SVN.
+ * @since 1.2.0 Removes "bin" folders, adds woocommerce support, adds wordpress.org updates via SVN.
  *
  * @param object gulp   Gulp project application.
  * @param array  config Configuration file.
@@ -45,7 +45,7 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.prescripts) config.prescripts = [];
     if (!config.prebuild) config.prebuild = ['scripts', 'styles'];
     if (!config.prezip) config.prezip = ['build-prezip', 'jsmin', 'cssmin'];
-    if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
+    if (!config.rootdirs) config.rootdirs = '{app,assets,vendor,woocommerce,templates}/**/*';
 
     // Set GULP tasks
     // SASS
