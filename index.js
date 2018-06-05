@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.1.1
+ * @version 1.2.1
  */
 
 /**
@@ -23,6 +23,7 @@
  * @since 1.0.7 Added prezip taks to enable special customization before zip is made.
  * @since 1.1.0 Node compatibility changes.
  * @since 1.2.0 Removes "bin" folders, prepares wordpress.org SVN.
+ * @since 1.2.1 Replaces gulp-minify with gulp-jsmin.
  *
  * @param object gulp   Gulp project application.
  * @param array  config Configuration file.
@@ -33,7 +34,7 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!gulp) gulp = require('gulp');
     var sass = require('gulp-sass');
     var concat = require('gulp-concat');
-    var minify = require('gulp-minify');
+    var jsmin = require('gulp-jsmin');
     var cleanCSS = require('gulp-clean-css');
     var zip = require('gulp-zip');
     var del = require('del');
@@ -69,11 +70,7 @@ module.exports = function(gulp, config, wordpressOrg)
     // JS minify
     gulp.task('jsmin', ['scripts', 'build-prezip'], function() {
         return gulp.src('./assets/js/**/*.js')
-            .pipe(minify({
-                ext:{
-                    min:'.js'
-                }
-            }))
+            .pipe(jsmin())
             .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/js'));
     });
     // CSS minify
