@@ -37,6 +37,7 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.prebuild) config.prebuild = ['scripts', 'styles'];
     if (!config.prezip) config.prezip = ['build-prezip', 'jsmin', 'cssmin'];
     if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
+    if (!config.deletes) config.deletes = [];
 
     // Set GULP tasks
     // SASS
@@ -80,7 +81,7 @@ module.exports = function(gulp, config, wordpressOrg)
     });
     // Build clean pre zip
     gulp.task('build-prezip', ['build-files'], function() {
-        return del([
+        return del(config.deletes.concat([
             './builds/staging/'+config.name+'/assets/{raw,css,js,wordpress}/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
             './builds/staging/'+config.name+'/vendor/nikic/**/*',
@@ -91,7 +92,7 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging/'+config.name+'/vendor/nikic',
             './builds/staging/'+config.name+'/vendor/bin',
             './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
-        ]);
+        ]));
     });
     // Build zip
     gulp.task('build-zip', config.prezip, function() {
