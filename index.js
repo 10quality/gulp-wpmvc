@@ -14,16 +14,6 @@
 /**
  * Export module.
  * @since 1.0.0
- * @since 1.0.1 Changed execution order and added staging and gulp.
- * @since 1.0.2 Added fixes for theme check.
- * @since 1.0.3 Pretasks defined and better concat scope.
- * @since 1.0.4 Minification.
- * @since 1.0.5 Enable the option to set which directories to include on root.
- * @since 1.0.6 Added prebuild tasks to enable special customization before zip and build are made.
- * @since 1.0.7 Added prezip taks to enable special customization before zip is made.
- * @since 1.1.0 Node compatibility changes.
- * @since 1.2.0 Removes "bin" folders, prepares wordpress.org SVN.
- * @since 1.2.1 Replaces gulp-minify with gulp-jsmin.
  *
  * @param object gulp   Gulp project application.
  * @param array  config Configuration file.
@@ -100,7 +90,7 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands,nikic}',
             './builds/staging/'+config.name+'/vendor/nikic',
             './builds/staging/'+config.name+'/vendor/bin',
-            './builds/staging/'+config.name+'/vendor/10quality/wp-file/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
+            './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
         ]);
     });
     // Build zip
@@ -163,7 +153,6 @@ module.exports = function(gulp, config, wordpressOrg)
     if (wordpressOrg
         && wordpressOrg.cwd
         && wordpressOrg.username
-        && wordpressOrg.password
     ) {
         // Wordpress task
         gulp.task('wordpress', [
