@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * Wordpress MVC gulp development file.
- * Enables predefined (standarized) tasks, such use minify or sass compilation.
+ * WordPress MVC gulp development file.
+ * Enables predefined (standarized) tasks, such as minify or sass compilation.
  *
  * @link http://gulpjs.com/
  * @author Alejandro Mostajo <info@10quality.com>
@@ -112,13 +112,13 @@ module.exports = function(gulp, config, wordpressOrg)
         return gulp.src('./builds/staging/'+config.name+'/**/*')
             .pipe(gulp.dest('svn/'+wordpressOrg.path+'/trunk'));
     });
-    // Clean truck
+    // Clean trunk
     gulp.task('clean-trunk', config.prezip, function() {
         return del([
             './svn/'+wordpressOrg.path+'/trunk/**/*',
         ]);
     });
-    // Build trunk
+    // Build assets
     gulp.task('build-assets', ['build-trunk'], function() {
         return gulp.src('./assets/wordpress/**/*')
             .pipe(gulp.dest('svn/'+wordpressOrg.path+'/assets'));
@@ -155,7 +155,7 @@ module.exports = function(gulp, config, wordpressOrg)
         && wordpressOrg.cwd
         && wordpressOrg.username
     ) {
-        // Wordpress task
+        // WordPress task
         gulp.task('wordpress', [
             'styles',
             'scripts',
