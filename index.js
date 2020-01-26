@@ -40,36 +40,50 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
     if (!config.deletes) config.deletes = [];
     // Prepare individual assets compilations
-    var assets = {css:[], js:[]};
-    if (fs.existsSync('./assets/raw/css/'))
-        assets.css = fs.readdirSync('./assets/raw/css')
-            .filter(function(dirent) {
-                return (dirent.isDirectory === undefined && fs.lstatSync('./assets/raw/css/' + dirent).isDirectory())
-                    || (dirent.isDirectory !== undefined && dirent.isDirectory());
-            })
-            .map(function(dirent) {
-                return dirent.name === undefined ? dirent : dirent.name;
-            });
-    if (fs.existsSync('./assets/raw/js/'))
-        assets.js = fs.readdirSync('./assets/raw/js')
-            .filter(function(dirent) {
-                return (dirent.isDirectory === undefined && fs.lstatSync('./assets/raw/js/' + dirent).isDirectory())
-                    || (dirent.isDirectory !== undefined && dirent.isDirectory());
-            })
-            .map(function(dirent) {
-                return dirent.name === undefined ? dirent : dirent.name;
-            });
+    var assets = {css:[], js:[], sass:[]};
     // ------------------
     // Set GULP tasks
     // ------------------
     // SASS
     gulp.task('sass', function () {
-        return gulp.src('./assets/raw/sass/*.scss')
+        if (fs.existsSync('./assets/raw/sass/'))
+            assets.sass = fs.readdirSync('./assets/raw/sass')
+                .filter(function(dirent) {
+                    return (dirent.isDirectory === undefined && !fs.lstatSync('./assets/raw/sass/' + dirent).isDirectory())
+                        || (dirent.isDirectory !== undefined && !dirent.isDirectory());
+                })
+                .map(function(dirent) {
+                    return dirent.name === undefined ? dirent.replace(/\.[\s\S]+/g, '') : dirent.name.replace(/\.[\s\S]+/g, '');
+                });
+        if (assets.sass.length > 1) {
+            return assets.sass.map(function(asset) {
+                gulp.src([
+                    './assets/raw/sass/'+asset+'.scss',
+                    './assets/raw/sass/'+asset+'.sass',
+                ])
+                .pipe(sass().on('error', sass.logError))
+                .pipe(gulp.dest('./assets/raw/css/'+asset));
+            });
+        }
+        return gulp.src([
+                './assets/raw/sass/*.scss',
+                './assets/raw/sass/*.sass',
+            ])
             .pipe(sass().on('error', sass.logError))
             .pipe(gulp.dest('./assets/raw/css'));
     });
     // Styles
     gulp.task('styles', config.prestyles, function () {
+        // Assets prep
+        if (fs.existsSync('./assets/raw/css/'))
+            assets.css = fs.readdirSync('./assets/raw/css')
+                .filter(function(dirent) {
+                    return (dirent.isDirectory === undefined && fs.lstatSync('./assets/raw/css/' + dirent).isDirectory())
+                        || (dirent.isDirectory !== undefined && dirent.isDirectory());
+                })
+                .map(function(dirent) {
+                    return dirent.name === undefined ? dirent : dirent.name;
+                });
         // {asset}.css
         assets.css
             .filter(function(asset) { return asset !== 'app'; })
@@ -91,6 +105,15 @@ module.exports = function(gulp, config, wordpressOrg)
     });
     // Scripts
     gulp.task('scripts', config.prescripts, function() {
+        if (fs.existsSync('./assets/raw/js/'))
+            assets.js = fs.readdirSync('./assets/raw/js')
+                .filter(function(dirent) {
+                    return (dirent.isDirectory === undefined && fs.lstatSync('./assets/raw/js/' + dirent).isDirectory())
+                        || (dirent.isDirectory !== undefined && dirent.isDirectory());
+                })
+                .map(function(dirent) {
+                    return dirent.name === undefined ? dirent : dirent.name;
+                });
         // {asset}.js
         assets.js
             .filter(function(asset) { return asset !== 'app'; })
