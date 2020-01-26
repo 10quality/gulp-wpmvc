@@ -28,6 +28,7 @@ module.exports = function(gulp, config, wordpressOrg)
     var cleanCSS = require('gulp-clean-css');
     var zip = require('gulp-zip');
     var del = require('del');
+    var fs = require('fs');
     // Prepare options
     if (!config) config = {};
     if (!config.name) config.name = 'app';
@@ -38,8 +39,29 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.prezip) config.prezip = ['build-prezip', 'jsmin', 'cssmin'];
     if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
     if (!config.deletes) config.deletes = [];
-
+    // Prepare individual assets compilations
+    var assets = {css:[], js:[]};
+    if (fs.existsSync('./assets/raw/css/'))
+        assets.css = fs.readdirSync('./assets/raw/css')
+            .filter(function(dirent) {
+                return (dirent.isDirectory === undefined && fs.lstatSync('./assets/raw/css/' + dirent).isDirectory())
+                    || (dirent.isDirectory !== undefined && dirent.isDirectory());
+            })
+            .map(function(dirent) {
+                return dirent.name === undefined ? dirent : dirent.name;
+            });
+    if (fs.existsSync('./assets/raw/js/'))
+        assets.js = fs.readdirSync('./assets/raw/js')
+            .filter(function(dirent) {
+                return (dirent.isDirectory === undefined && fs.lstatSync('./assets/raw/js/' + dirent).isDirectory())
+                    || (dirent.isDirectory !== undefined && dirent.isDirectory());
+            })
+            .map(function(dirent) {
+                return dirent.name === undefined ? dirent : dirent.name;
+            });
+    // ------------------
     // Set GULP tasks
+    // ------------------
     // SASS
     gulp.task('sass', function () {
         return gulp.src('./assets/raw/sass/*.scss')
@@ -48,13 +70,43 @@ module.exports = function(gulp, config, wordpressOrg)
     });
     // Styles
     gulp.task('styles', config.prestyles, function () {
-        return gulp.src('./assets/raw/css/**/*.css')
+        // {asset}.css
+        assets.css
+            .filter(function(asset) { return asset !== 'app'; })
+            .map(function(asset) {
+                gulp.src('./assets/raw/css/'+asset+'/**/*.css')
+                .pipe(concat(asset+'.css'))
+                .pipe(gulp.dest('./assets/css'));
+            });
+        // app.css
+        return gulp.src(
+                assets.css.filter(function(asset) { return asset !== 'app'; })
+                    .map(function(asset) {
+                        return '!./assets/raw/css/'+asset+'/**/*';
+                    })
+                    .concat(['./assets/raw/css/**/*.css'])
+            )
             .pipe(concat('app.css'))
             .pipe(gulp.dest('./assets/css'));
     });
     // Scripts
     gulp.task('scripts', config.prescripts, function() {
-        return gulp.src('./assets/raw/js/**/*.js')
+        // {asset}.js
+        assets.js
+            .filter(function(asset) { return asset !== 'app'; })
+            .map(function(asset) {
+                gulp.src('./assets/raw/js/'+asset+'/**/*.js')
+                .pipe(concat(asset+'.js'))
+                .pipe(gulp.dest('./assets/js'));
+            });
+        // app.js
+        return gulp.src(
+                assets.js.filter(function(asset) { return asset !== 'app'; })
+                    .map(function(asset) {
+                        return '!./assets/raw/js/'+asset+'/**/*';
+                    })
+                    .concat(['./assets/raw/js/**/*.js'])
+            )
             .pipe(concat('app.js'))
             .pipe(gulp.dest('./assets/js'));
     });
