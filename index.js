@@ -62,7 +62,7 @@ module.exports = function(gulp, config, wordpressOrg)
                     './assets/raw/sass/'+asset+'.sass',
                 ])
                 .pipe(sass().on('error', sass.logError))
-                .pipe(gulp.dest('./assets/raw/css/'+asset));
+                .pipe(gulp.dest('./assets/css'));
             });
         }
         return gulp.src([
@@ -70,7 +70,7 @@ module.exports = function(gulp, config, wordpressOrg)
                 './assets/raw/sass/*.sass',
             ])
             .pipe(sass().on('error', sass.logError))
-            .pipe(gulp.dest('./assets/raw/css'));
+            .pipe(gulp.dest('./assets/css'));
     });
     // Styles
     gulp.task('styles', config.prestyles, function () {
@@ -89,8 +89,8 @@ module.exports = function(gulp, config, wordpressOrg)
             .filter(function(asset) { return asset !== 'app'; })
             .map(function(asset) {
                 gulp.src('./assets/raw/css/'+asset+'/**/*.css')
-                .pipe(concat(asset+'.css'))
-                .pipe(gulp.dest('./assets/css'));
+                    .pipe(concat(asset+'.css'))
+                    .pipe(gulp.dest('./assets/css'));
             });
         // app.css
         return gulp.src(
