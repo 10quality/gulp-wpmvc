@@ -46,4 +46,25 @@ describe('wpmvc', function() {
     it('Task "build" exists.', function() {
         assert.notEqual(undefined, gulp.task('build')); 
     });
+    it('Task "watch" exists.', function() {
+        assert.notEqual(undefined, gulp.task('watch'));
+    });
+    it('Task "watch-js" exists.', function() {
+        assert.notEqual(undefined, gulp.task('watch-js'));
+    });
+    it('Task "watch-styles" exists.', function() {
+        assert.notEqual(undefined, gulp.task('watch-styles'));
+    });
+    it('Task "build-assets" exists.', function() {
+        assert.notEqual(undefined, gulp.task('build-assets'));
+    });
+    it('Task "svn-clean" exists.', function() {
+        assert.notEqual(undefined, gulp.task('svn-clean'));
+    });
+    it('Task "build-trunk" exists.', function() {
+        assert.notEqual(undefined, gulp.task('build-trunk'));
+    });
+    it('Task "clean-trunk" exists.', function() {
+        assert.notEqual(undefined, gulp.task('clean-trunk'));
+    });
 });
