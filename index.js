@@ -29,6 +29,7 @@ module.exports = function(gulp, config, wordpressOrg)
     var zip = require('gulp-zip');
     var del = require('del');
     var fs = require('fs');
+    var watch = require('gulp-watch');
     // Prepare options
     if (!config) config = {};
     if (!config.name) config.name = 'app';
@@ -204,6 +205,39 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging/**/*',
             './builds/staging',
         ]);
+    });
+    // Watch
+    gulp.task('watch-styles', function () {
+        return watch([
+                './assets/raw/sass/**/*.sass',
+                './assets/raw/sass/**/*.scss',
+                './assets/raw/css/**/*.css',
+            ],
+            function () {
+                gulp.start('styles');
+            }
+        );
+    });
+    gulp.task('watch-js', function () {
+        return watch([
+                './assets/raw/js/**/*.js',
+            ],
+            function () {
+                gulp.start('scripts');
+            }
+        );
+    });
+    gulp.task('watch', function () {
+        return watch([
+                './assets/raw/sass/**/*.sass',
+                './assets/raw/sass/**/*.scss',
+                './assets/raw/css/**/*.css',
+                './assets/raw/js/**/*.js',
+            ],
+            function () {
+                gulp.start('dev');
+            }
+        );
     });
     // --------------------
     // DEV

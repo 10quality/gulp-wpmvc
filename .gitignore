@@ -3,3 +3,4 @@
 
 # Tmp files
 package-lock.json
+/build
