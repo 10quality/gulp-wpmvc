@@ -206,39 +206,6 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging',
         ]);
     }));
-    // Watch
-    gulp.task('watch-styles', function () {
-        return watch([
-                './assets/raw/sass/**/*.sass',
-                './assets/raw/sass/**/*.scss',
-                './assets/raw/css/**/*.css',
-            ],
-            function () {
-                gulp.start('styles');
-            }
-        );
-    });
-    gulp.task('watch-js', function () {
-        return watch([
-                './assets/raw/js/**/*.js',
-            ],
-            function () {
-                gulp.start('scripts');
-            }
-        );
-    });
-    gulp.task('watch', function () {
-        return watch([
-                './assets/raw/sass/**/*.sass',
-                './assets/raw/sass/**/*.scss',
-                './assets/raw/css/**/*.css',
-                './assets/raw/js/**/*.js',
-            ],
-            function () {
-                gulp.start('dev');
-            }
-        );
-    });
     // --------------------
     // DEV
     gulp.task('default', gulp.parallel([
@@ -249,6 +216,27 @@ module.exports = function(gulp, config, wordpressOrg)
         'styles',
         'scripts',
     ]));
+    // Watch
+    gulp.task('watch-styles', async function() {
+        gulp.watch([
+            './assets/raw/sass/**/*.sass',
+            './assets/raw/sass/**/*.scss',
+            './assets/raw/css/**/*.css',
+        ], gulp.series('styles'));
+    });
+    gulp.task('watch-js', async function() {
+        gulp.watch([
+            './assets/raw/js/**/*.js',
+        ], gulp.series('scripts'));
+    });
+    gulp.task('watch', async function() {
+        gulp.watch([
+            './assets/raw/sass/**/*.sass',
+            './assets/raw/sass/**/*.scss',
+            './assets/raw/css/**/*.css',
+            './assets/raw/js/**/*.js',
+        ], gulp.series('dev'));
+    });
     // BUILD
     gulp.task('build', gulp.parallel([
         'styles',
