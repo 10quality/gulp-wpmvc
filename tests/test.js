@@ -76,4 +76,7 @@ describe('wpmvc', function() {
     it('Task "deploy" exists.', function() {
         assert.notEqual(undefined, gulp.task('deploy')); 
     });
+    it('Task "watch-sass" exists.', function() {
+        assert.notEqual(undefined, gulp.task('watch-sass')); 
+    });
 });
