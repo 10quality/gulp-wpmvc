@@ -40,6 +40,8 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.prezip) config.prezip = ['build-prezip', 'jsmin', 'cssmin'];
     if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
     if (!config.deletes) config.deletes = [];
+    if (!config.deployname) config.deployname = 'deploy';
+    if (!config.predeploy) config.predeploy = ['build-prezip', 'jsmin', 'cssmin'];
     // Prepare individual assets compilations
     var assets = {css:[], js:[], sass:[]};
     // ------------------
@@ -207,6 +209,19 @@ module.exports = function(gulp, config, wordpressOrg)
         ]);
     }));
     // --------------------
+    // Deployment: Deploybot | Pipelines | Shell
+    gulp.task('deploy-main', gulp.series(config.predeploy, function () {
+        return gulp.src('./builds/staging/'+config.name+'/**/*')
+            .pipe(gulp.dest('./builds/'+config.deployname));
+    }));
+    // Cleans Deploy
+    gulp.task('deploy-clean', gulp.series(['deploy-main'], function() {
+        return del([
+            './builds/staging/**/*',
+            './builds/staging',
+        ]);
+    }));
+    // --------------------
     // DEV
     gulp.task('default', gulp.parallel([
         'styles',
@@ -246,6 +261,8 @@ module.exports = function(gulp, config, wordpressOrg)
     // BUILD
     // - Zip
     gulp.task('build', gulp.series('build-clean'));
+    // - Deploy: Deploybot | Pipelines | Shell
+    gulp.task('deploy', gulp.series('deploy-clean'));
     // - WordPress SVN
     if (wordpressOrg
         && wordpressOrg.cwd

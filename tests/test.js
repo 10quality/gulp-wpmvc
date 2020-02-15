@@ -67,4 +67,13 @@ describe('wpmvc', function() {
     it('Task "build" exists.', function() {
         assert.notEqual(undefined, gulp.task('build')); 
     });
+    it('Task "deploy-main" exists.', function() {
+        assert.notEqual(undefined, gulp.task('deploy-main')); 
+    });
+    it('Task "deploy-clean" exists.', function() {
+        assert.notEqual(undefined, gulp.task('deploy-clean')); 
+    });
+    it('Task "deploy" exists.', function() {
+        assert.notEqual(undefined, gulp.task('deploy')); 
+    });
 });
