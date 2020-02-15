@@ -238,31 +238,14 @@ module.exports = function(gulp, config, wordpressOrg)
         ], gulp.series('dev'));
     });
     // BUILD
-    gulp.task('build', gulp.parallel([
-        'styles',
-        'scripts',
-        'build-files',
-        'jsmin',
-        'cssmin',
-        'build-prezip',
-        'build-zip',
-        'build-clean',
-    ]));
+    // - Zip
+    gulp.task('build', gulp.series('build-clean'));
+    // - WordPress SVN
     if (wordpressOrg
         && wordpressOrg.cwd
         && wordpressOrg.username
     ) {
         // WordPress task
-        gulp.task('wordpress', gulp.parallel([
-            'styles',
-            'scripts',
-            'build-files',
-            'jsmin',
-            'cssmin',
-            'clean-trunk',
-            'build-trunk',
-            'build-assets',
-            'svn-clean',
-        ]));
+        gulp.task('wordpress', gulp.series('svn-clean'));
     }
 }
