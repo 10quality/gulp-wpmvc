@@ -1,9 +1,13 @@
 # gulp-wpmvc
 
+| Deprecated in WordPress MVC v1.1.0 |
+| --- |
+| **Important notice:** This package will no longer receive support as WordPress MVC will be migrating to webpack in v1.1.0 |
+
 Predefined gulp tasks for [WordPress MVC](https://www.wordpress-mvc.com/) (WPMVC).
 
 ## Requirements
-* node >= v0.12.0
+* node >= v0.12.0 <= 13
 * npm >= v2.3.0
 
 ## Troubleshooting
