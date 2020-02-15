@@ -217,6 +217,12 @@ module.exports = function(gulp, config, wordpressOrg)
         'scripts',
     ]));
     // Watch
+    gulp.task('watch-sass', async function() {
+        gulp.watch([
+            './assets/raw/sass/**/*.sass',
+            './assets/raw/sass/**/*.scss',
+        ], gulp.series('sass'));
+    });
     gulp.task('watch-styles', async function() {
         gulp.watch([
             './assets/raw/sass/**/*.sass',
