@@ -74,7 +74,7 @@ module.exports = function(gulp, config, wordpressOrg)
             .pipe(gulp.dest('./assets/css'));
     });
     // Styles
-    gulp.task('styles', config.prestyles, function () {
+    gulp.task('styles', gulp.series(config.prestyles, function () {
         // Assets prep
         if (fs.existsSync('./assets/raw/css/'))
             assets.css = fs.readdirSync('./assets/raw/css')
@@ -103,9 +103,10 @@ module.exports = function(gulp, config, wordpressOrg)
             )
             .pipe(concat('app.css'))
             .pipe(gulp.dest('./assets/css'));
-    });
+    }));
     // Scripts
-    gulp.task('scripts', config.prescripts, function() {
+    gulp.task('scripts', gulp.series(config.prescripts, function() {
+        // Assets prep
         if (fs.existsSync('./assets/raw/js/'))
             assets.js = fs.readdirSync('./assets/raw/js')
                 .filter(function(dirent) {
@@ -120,8 +121,8 @@ module.exports = function(gulp, config, wordpressOrg)
             .filter(function(asset) { return asset !== 'app'; })
             .map(function(asset) {
                 gulp.src('./assets/raw/js/'+asset+'/**/*.js')
-                .pipe(concat(asset+'.js'))
-                .pipe(gulp.dest('./assets/js'));
+                    .pipe(concat(asset+'.js'))
+                    .pipe(gulp.dest('./assets/js'));
             });
         // app.js
         return gulp.src(
@@ -133,30 +134,18 @@ module.exports = function(gulp, config, wordpressOrg)
             )
             .pipe(concat('app.js'))
             .pipe(gulp.dest('./assets/js'));
-    });
-    // JS minify
-    gulp.task('jsmin', ['scripts', 'build-prezip'], function() {
-        return gulp.src('./assets/js/**/*.js')
-            .pipe(jsmin())
-            .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/js'));
-    });
-    // CSS minify
-    gulp.task('cssmin', ['styles', 'build-prezip'], function() {
-        return gulp.src('./assets/css/**/*.css')
-            .pipe(cleanCSS({compatibility: 'ie8'}))
-            .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/css'));
-    });
+    }));
     // Build files
-    gulp.task('build-files', config.prebuild, function() {
+    gulp.task('build-files', gulp.series(config.prebuild, function() {
         return gulp.src([
                 config.rootdirs,
                 './LICENSE',
                 './*.{php,css,jpg,txt}'
             ])
             .pipe(gulp.dest('./builds/staging/'+config.name));
-    });
+    }));
     // Build clean pre zip
-    gulp.task('build-prezip', ['build-files'], function() {
+    gulp.task('build-prezip', gulp.series(['build-files'], function() {
         return del(config.deletes.concat([
             './builds/staging/'+config.name+'/assets/{raw,css,js,wordpress}/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
@@ -169,43 +158,55 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging/'+config.name+'/vendor/bin',
             './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
         ]));
-    });
+    }));
+    // JS minify
+    gulp.task('jsmin', gulp.series(['scripts', 'build-prezip'], function() {
+        return gulp.src('./assets/js/**/*.js')
+            .pipe(jsmin())
+            .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/js'));
+    }));
+    // CSS minify
+    gulp.task('cssmin', gulp.series(['styles', 'build-prezip'], function() {
+        return gulp.src('./assets/css/**/*.css')
+            .pipe(cleanCSS({compatibility: 'ie8'}))
+            .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/css'));
+    }));
     // Build zip
-    gulp.task('build-zip', config.prezip, function() {
+    gulp.task('build-zip', gulp.series(config.prezip, function() {
         return gulp.src('./builds/staging/**/*')
             .pipe(zip(config.name+'-'+config.version+'.zip'))
             .pipe(gulp.dest('./builds'));
-    });
+    }));
     // Build clean
-    gulp.task('build-clean', ['build-zip'], function() {
+    gulp.task('build-clean', gulp.series(['build-zip'], function() {
         return del([
             './builds/staging/**/*',
             './builds/staging',
         ]);
-    });
-    // Build trunk
-    gulp.task('build-trunk', ['clean-trunk'], function() {
-        return gulp.src('./builds/staging/'+config.name+'/**/*')
-            .pipe(gulp.dest('svn/'+wordpressOrg.path+'/trunk'));
-    });
+    }));
     // Clean trunk
-    gulp.task('clean-trunk', config.prezip, function() {
+    gulp.task('clean-trunk', gulp.series(config.prezip, function() {
         return del([
             './svn/'+wordpressOrg.path+'/trunk/**/*',
         ]);
-    });
+    }));
+    // Build trunk
+    gulp.task('build-trunk', gulp.series(['clean-trunk'], function() {
+        return gulp.src('./builds/staging/'+config.name+'/**/*')
+            .pipe(gulp.dest('svn/'+wordpressOrg.path+'/trunk'));
+    }));
     // Build assets
-    gulp.task('build-assets', ['build-trunk'], function() {
+    gulp.task('build-assets', gulp.series(['build-trunk'], function() {
         return gulp.src('./assets/wordpress/**/*')
             .pipe(gulp.dest('svn/'+wordpressOrg.path+'/assets'));
-    });
+    }));
     // Cleans SVN
-    gulp.task('svn-clean', ['build-assets'], function() {
+    gulp.task('svn-clean', gulp.series(['build-assets'], function() {
         return del([
             './builds/staging/**/*',
             './builds/staging',
         ]);
-    });
+    }));
     // Watch
     gulp.task('watch-styles', function () {
         return watch([
@@ -241,16 +242,16 @@ module.exports = function(gulp, config, wordpressOrg)
     });
     // --------------------
     // DEV
-    gulp.task('default', [
+    gulp.task('default', gulp.parallel([
         'styles',
         'scripts',
-    ]);
-    gulp.task('dev', [
+    ]));
+    gulp.task('dev', gulp.parallel([
         'styles',
         'scripts',
-    ]);
+    ]));
     // BUILD
-    gulp.task('build', [
+    gulp.task('build', gulp.parallel([
         'styles',
         'scripts',
         'build-files',
@@ -259,13 +260,13 @@ module.exports = function(gulp, config, wordpressOrg)
         'build-prezip',
         'build-zip',
         'build-clean',
-    ]);
+    ]));
     if (wordpressOrg
         && wordpressOrg.cwd
         && wordpressOrg.username
     ) {
         // WordPress task
-        gulp.task('wordpress', [
+        gulp.task('wordpress', gulp.parallel([
             'styles',
             'scripts',
             'build-files',
@@ -275,6 +276,6 @@ module.exports = function(gulp, config, wordpressOrg)
             'build-trunk',
             'build-assets',
             'svn-clean',
-        ]);
+        ]));
     }
 }

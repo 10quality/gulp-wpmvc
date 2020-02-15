@@ -16,8 +16,8 @@ describe('wpmvc', function() {
     it('Task "styles" exists.', function() {
         assert.notEqual(undefined, gulp.task('styles')); 
     });
-    it('Task "scrits" exists.', function() {
-        assert.notEqual(undefined, gulp.task('scrits')); 
+    it('Task "scripts" exists.', function() {
+        assert.notEqual(undefined, gulp.task('scripts')); 
     });
     it('Task "sass" exists.', function() {
         assert.notEqual(undefined, gulp.task('sass')); 
@@ -40,20 +40,11 @@ describe('wpmvc', function() {
     it('Task "build-clean" exists.', function() {
         assert.notEqual(undefined, gulp.task('build-clean')); 
     });
-    it('Task "dev" exists.', function() {
-        assert.notEqual(undefined, gulp.task('dev')); 
+    it('Task "build-trunk" exists.', function() {
+        assert.notEqual(undefined, gulp.task('build-trunk'));
     });
-    it('Task "build" exists.', function() {
-        assert.notEqual(undefined, gulp.task('build')); 
-    });
-    it('Task "watch" exists.', function() {
-        assert.notEqual(undefined, gulp.task('watch'));
-    });
-    it('Task "watch-js" exists.', function() {
-        assert.notEqual(undefined, gulp.task('watch-js'));
-    });
-    it('Task "watch-styles" exists.', function() {
-        assert.notEqual(undefined, gulp.task('watch-styles'));
+    it('Task "clean-trunk" exists.', function() {
+        assert.notEqual(undefined, gulp.task('clean-trunk'));
     });
     it('Task "build-assets" exists.', function() {
         assert.notEqual(undefined, gulp.task('build-assets'));
@@ -61,10 +52,19 @@ describe('wpmvc', function() {
     it('Task "svn-clean" exists.', function() {
         assert.notEqual(undefined, gulp.task('svn-clean'));
     });
-    it('Task "build-trunk" exists.', function() {
-        assert.notEqual(undefined, gulp.task('build-trunk'));
+    it('Task "watch-styles" exists.', function() {
+        assert.notEqual(undefined, gulp.task('watch-styles'));
     });
-    it('Task "clean-trunk" exists.', function() {
-        assert.notEqual(undefined, gulp.task('clean-trunk'));
+    it('Task "watch-js" exists.', function() {
+        assert.notEqual(undefined, gulp.task('watch-js'));
+    });
+    it('Task "watch" exists.', function() {
+        assert.notEqual(undefined, gulp.task('watch'));
+    });
+    it('Task "dev" exists.', function() {
+        assert.notEqual(undefined, gulp.task('dev')); 
+    });
+    it('Task "build" exists.', function() {
+        assert.notEqual(undefined, gulp.task('build')); 
     });
 });
