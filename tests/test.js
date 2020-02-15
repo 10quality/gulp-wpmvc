@@ -1,6 +1,6 @@
 /**
  * Test unit.
- * @version 1.1.0
+ * @version 1.3.0
  */
 var assert = require('assert');
 var fs = require('fs');
