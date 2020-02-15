@@ -46,7 +46,7 @@ module.exports = function(gulp, config, wordpressOrg)
     // Set GULP tasks
     // ------------------
     // SASS
-    gulp.task('sass', function () {
+    gulp.task('sass', async function () {
         if (fs.existsSync('./assets/raw/sass/'))
             assets.sass = fs.readdirSync('./assets/raw/sass')
                 .filter(function(dirent) {
@@ -54,13 +54,12 @@ module.exports = function(gulp, config, wordpressOrg)
                         || (dirent.isDirectory !== undefined && !dirent.isDirectory());
                 })
                 .map(function(dirent) {
-                    return dirent.name === undefined ? dirent.replace(/\.[\s\S]+/g, '') : dirent.name.replace(/\.[\s\S]+/g, '');
+                    return dirent.name === undefined ? dirent : dirent.name;
                 });
         if (assets.sass.length > 1) {
             return assets.sass.map(function(asset) {
                 gulp.src([
-                    './assets/raw/sass/'+asset+'.scss',
-                    './assets/raw/sass/'+asset+'.sass',
+                    './assets/raw/sass/'+asset,
                 ])
                 .pipe(sass().on('error', sass.logError))
                 .pipe(gulp.dest('./assets/css'));
