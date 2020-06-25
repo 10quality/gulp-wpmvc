@@ -1,6 +1,6 @@
 /**
  * Test unit.
- * @version 1.3.0
+ * @version 1.3.1
  */
 var assert = require('assert');
 var fs = require('fs');
@@ -78,5 +78,8 @@ describe('wpmvc', function() {
     });
     it('Task "watch-sass" exists.', function() {
         assert.notEqual(undefined, gulp.task('watch-sass')); 
+    });
+    it('Task "build-resources" exists.', function() {
+        assert.notEqual(undefined, gulp.task('build-resources')); 
     });
 });
