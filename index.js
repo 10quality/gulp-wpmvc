@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.3.0
+ * @version 1.3.1
  */
 
 /**
@@ -36,12 +36,12 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.version) config.version = '1.0.0';
     if (!config.prestyles) config.prestyles = ['sass'];
     if (!config.prescripts) config.prescripts = [];
-    if (!config.prebuild) config.prebuild = ['scripts', 'styles'];
-    if (!config.prezip) config.prezip = ['build-prezip', 'jsmin', 'cssmin'];
+    if (!config.prebuild) config.prebuild = [];
+    if (!config.prezip) config.prezip = ['build-prezip', 'build-resources'];
     if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
     if (!config.deletes) config.deletes = [];
     if (!config.deployname) config.deployname = 'deploy';
-    if (!config.predeploy) config.predeploy = ['build-prezip', 'jsmin', 'cssmin'];
+    if (!config.predeploy) config.predeploy = ['build-prezip', 'build-resources'];
     // Prepare individual assets compilations
     var assets = {css:[], js:[], sass:[]};
     // ------------------
@@ -146,7 +146,7 @@ module.exports = function(gulp, config, wordpressOrg)
             .pipe(gulp.dest('./builds/staging/'+config.name));
     }));
     // Build clean pre zip
-    gulp.task('build-prezip', gulp.series(['build-files'], function() {
+    gulp.task('build-prezip', gulp.series('build-files', function() {
         return del(config.deletes.concat([
             './builds/staging/'+config.name+'/assets/{raw,css,js,wordpress}/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
@@ -160,18 +160,20 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
         ]));
     }));
-    // JS minify
-    gulp.task('jsmin', gulp.series(['scripts', 'build-prezip'], function() {
-        return gulp.src('./assets/js/**/*.js')
-            .pipe(jsmin())
-            .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/js'));
-    }));
     // CSS minify
-    gulp.task('cssmin', gulp.series(['styles', 'build-prezip'], function() {
+    gulp.task('cssmin', gulp.series(['styles'], function() {
         return gulp.src('./assets/css/**/*.css')
             .pipe(cleanCSS({compatibility: 'ie8'}))
             .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/css'));
     }));
+    // JS minify
+    gulp.task('jsmin', gulp.series(['scripts'], function() {
+        return gulp.src('./assets/js/**/*.js')
+            .pipe(jsmin())
+            .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/js'));
+    }));
+    // Builds CSS and JS resources
+    gulp.task('build-resources', gulp.parallel('jsmin', 'cssmin'));
     // Build zip
     gulp.task('build-zip', gulp.series(config.prezip, function() {
         return gulp.src('./builds/staging/**/*')
@@ -179,7 +181,7 @@ module.exports = function(gulp, config, wordpressOrg)
             .pipe(gulp.dest('./builds'));
     }));
     // Build clean
-    gulp.task('build-clean', gulp.series(['build-zip'], function() {
+    gulp.task('build-clean', gulp.series('build-zip', function() {
         return del([
             './builds/staging/**/*',
             './builds/staging',
@@ -192,17 +194,17 @@ module.exports = function(gulp, config, wordpressOrg)
         ]);
     }));
     // Build trunk
-    gulp.task('build-trunk', gulp.series(['clean-trunk'], function() {
+    gulp.task('build-trunk', gulp.series('clean-trunk', function() {
         return gulp.src('./builds/staging/'+config.name+'/**/*')
             .pipe(gulp.dest('svn/'+wordpressOrg.path+'/trunk'));
     }));
     // Build assets
-    gulp.task('build-assets', gulp.series(['build-trunk'], function() {
+    gulp.task('build-assets', gulp.series('build-trunk', function() {
         return gulp.src('./assets/wordpress/**/*')
             .pipe(gulp.dest('svn/'+wordpressOrg.path+'/assets'));
     }));
     // Cleans SVN
-    gulp.task('svn-clean', gulp.series(['build-assets'], function() {
+    gulp.task('svn-clean', gulp.series('build-assets', function() {
         return del([
             './builds/staging/**/*',
             './builds/staging',
