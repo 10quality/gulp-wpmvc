@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.3.1
+ * @version 1.3.2
  */
 
 /**
@@ -36,9 +36,10 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.version) config.version = '1.0.0';
     if (!config.prestyles) config.prestyles = ['sass'];
     if (!config.prescripts) config.prescripts = [];
-    if (!config.prebuild) config.prebuild = [];
+    if (!config.prebuild) config.prebuild = ['build-dev'];
     if (!config.prezip) config.prezip = ['build-prezip', 'build-resources'];
     if (!config.rootdirs) config.rootdirs = '{app,assets,vendor}/**/*';
+    if (!config.minify) config.minify = ['cssmin', 'jsmin'];
     if (!config.deletes) config.deletes = [];
     if (!config.deployname) config.deployname = 'deploy';
     if (!config.predeploy) config.predeploy = ['build-prezip', 'build-resources'];
@@ -136,6 +137,8 @@ module.exports = function(gulp, config, wordpressOrg)
             .pipe(concat('app.js'))
             .pipe(gulp.dest('./assets/js'));
     }));
+    // Build resources
+    gulp.task('build-dev', gulp.parallel(['styles', 'scripts']));
     // Build files
     gulp.task('build-files', gulp.series(config.prebuild, function() {
         return gulp.src([
@@ -148,12 +151,14 @@ module.exports = function(gulp, config, wordpressOrg)
     // Build clean pre zip
     gulp.task('build-prezip', gulp.series('build-files', function() {
         return del(config.deletes.concat([
-            './builds/staging/'+config.name+'/assets/{raw,css,js,wordpress}/**/*',
+            './builds/staging/'+config.name+'/assets/{raw,wordpress}/**/*',
+            './builds/staging/'+config.name+'/assets/css/*.css',
+            './builds/staging/'+config.name+'/assets/js/*.js',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
             './builds/staging/'+config.name+'/vendor/nikic/**/*',
             './builds/staging/'+config.name+'/vendor/bin/**/*',
             './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests/**/*',
-            './builds/staging/'+config.name+'/assets/{raw,css,js,wordpress}',
+            './builds/staging/'+config.name+'/assets/{raw,wordpress}',
             './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands,nikic}',
             './builds/staging/'+config.name+'/vendor/nikic',
             './builds/staging/'+config.name+'/vendor/bin',
@@ -161,19 +166,19 @@ module.exports = function(gulp, config, wordpressOrg)
         ]));
     }));
     // CSS minify
-    gulp.task('cssmin', gulp.series(['styles'], function() {
+    gulp.task('cssmin', function() {
         return gulp.src('./assets/css/**/*.css')
             .pipe(cleanCSS({compatibility: 'ie8'}))
             .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/css'));
-    }));
+    });
     // JS minify
-    gulp.task('jsmin', gulp.series(['scripts'], function() {
+    gulp.task('jsmin', function() {
         return gulp.src('./assets/js/**/*.js')
             .pipe(jsmin())
             .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/js'));
-    }));
-    // Builds CSS and JS resources
-    gulp.task('build-resources', gulp.parallel('jsmin', 'cssmin'));
+    });
+    // Minifies CSS, JS and other resources
+    gulp.task('build-resources', gulp.parallel(config.minify));
     // Build zip
     gulp.task('build-zip', gulp.series(config.prezip, function() {
         return gulp.src('./builds/staging/**/*')
