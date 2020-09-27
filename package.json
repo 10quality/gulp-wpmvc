@@ -1,6 +1,6 @@
 {
   "name": "gulp-wpmvc",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Gulp package for WordPress MVC development.",
   "scripts": {
     "test": "mocha tests/**/*.js"

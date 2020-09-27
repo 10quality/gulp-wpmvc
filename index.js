@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.3.3
+ * @version 1.3.4
  */
 
 /**
@@ -47,7 +47,8 @@ module.exports = function(gulp, config, wordpressOrg)
     var assets = {css:[], js:[], sass:[]};
     // Webpack support
     var webpack = undefined;
-    var webpackConfig = fs.existsSync('./webpack.config.js') ? require('./webpack.config.js') : undefined;
+    // Path in relation to /node_modules
+    var webpackConfig = fs.existsSync('./webpack.config.js') ? require('./../../webpack.config.js') : undefined;
     // ------------------
     // Set GULP tasks
     // ------------------
