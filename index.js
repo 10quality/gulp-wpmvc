@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.3.2
+ * @version 1.3.3
  */
 
 /**
@@ -45,9 +45,37 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.predeploy) config.predeploy = ['build-prezip', 'build-resources'];
     // Prepare individual assets compilations
     var assets = {css:[], js:[], sass:[]};
+    // Webpack support
+    var webpack = undefined;
+    var webpackConfig = fs.existsSync('./webpack.config.js') ? require('./webpack.config.js') : undefined;
     // ------------------
     // Set GULP tasks
     // ------------------
+    // Webpack support
+    if (webpackConfig) {
+        webpack = require('webpack');
+        function webpackPromise(cb) {
+            return new Promise((resolve, reject) => {
+                webpack(webpackConfig, (err, stats) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    if (stats.hasErrors()) {
+                        return reject(new Error(stats.compilation.errors.join('\n')))
+                    }
+                    resolve()
+                })
+            })
+        };
+        gulp.task('webpack', gulp.series(webpackPromise, function() {
+            return gulp.src('./assets/js/*.css')
+                .pipe(gulp.dest('./assets/css'))
+                .on('end', function() {
+                    del('./assets/js/*.css');
+                });
+        }));
+        config.prescripts.push('webpack');
+    }
     // SASS
     gulp.task('sass', async function () {
         if (fs.existsSync('./assets/raw/sass/'))

@@ -1,14 +1,14 @@
 # gulp-wpmvc
 
-| Deprecated in WordPress MVC v1.1.0 |
-| --- |
-| **Important notice:** This package will no longer receive support as WordPress MVC will be migrating to webpack in v1.1.0 |
-
 Predefined gulp tasks for [WordPress MVC](https://www.wordpress-mvc.com/) (WPMVC).
 
 ## Requirements
 * node >= v0.12.0 <= 13
 * npm >= v2.3.0
+
+## Webpack
+
+The package will detect if the project has a [Webpack](https://webpack.js.org/) configuration (file `webpack.config.js` at the root folder), if so, it will add the task `webpack`  and will include it in the build process.
 
 ## Troubleshooting
 
