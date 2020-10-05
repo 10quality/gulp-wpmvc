@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.3.4
+ * @version 1.3.5
  */
 
 /**
@@ -43,6 +43,27 @@ module.exports = function(gulp, config, wordpressOrg)
     if (!config.deletes) config.deletes = [];
     if (!config.deployname) config.deployname = 'deploy';
     if (!config.predeploy) config.predeploy = ['build-prezip', 'build-resources'];
+    if (!config.defaultdeletes)
+        config.defaultdeletes = [
+            './builds/staging/'+config.name+'/assets/{raw,wordpress}/**/*',
+            './builds/staging/'+config.name+'/assets/css/*.css',
+            './builds/staging/'+config.name+'/assets/js/*.js',
+            './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
+            './builds/staging/'+config.name+'/vendor/nikic/**/*',
+            './builds/staging/'+config.name+'/vendor/bin/**/*',
+            './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests/**/*',
+            './builds/staging/'+config.name+'/assets/{raw,wordpress}',
+            './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands,nikic}',
+            './builds/staging/'+config.name+'/vendor/nikic',
+            './builds/staging/'+config.name+'/vendor/bin',
+            './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
+            './builds/staging/'+config.name+'/vendor/doctrine/{instantiator}/**/*',
+            './builds/staging/'+config.name+'/vendor/doctrine/{instantiator}',
+            './builds/staging/'+config.name+'/vendor/symfony/{polyfill-ctype}/**/*',
+            './builds/staging/'+config.name+'/vendor/symfony/{polyfill-ctype}',
+            './builds/staging/'+config.name+'/vendor/{myclabs,phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}/**/*',
+            './builds/staging/'+config.name+'/vendor/{myclabs,phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}',
+        ];
     // Prepare individual assets compilations
     var assets = {css:[], js:[], sass:[]};
     // Webpack support
@@ -179,20 +200,7 @@ module.exports = function(gulp, config, wordpressOrg)
     }));
     // Build clean pre zip
     gulp.task('build-prezip', gulp.series('build-files', function() {
-        return del(config.deletes.concat([
-            './builds/staging/'+config.name+'/assets/{raw,wordpress}/**/*',
-            './builds/staging/'+config.name+'/assets/css/*.css',
-            './builds/staging/'+config.name+'/assets/js/*.js',
-            './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands}/**/*',
-            './builds/staging/'+config.name+'/vendor/nikic/**/*',
-            './builds/staging/'+config.name+'/vendor/bin/**/*',
-            './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests/**/*',
-            './builds/staging/'+config.name+'/assets/{raw,wordpress}',
-            './builds/staging/'+config.name+'/vendor/10quality/{ayuco,wpmvc-commands,nikic}',
-            './builds/staging/'+config.name+'/vendor/nikic',
-            './builds/staging/'+config.name+'/vendor/bin',
-            './builds/staging/'+config.name+'/vendor/10quality/{wp-file,wpmvc-logger,wpmvc-phpfastcache,wpmvc-core,wpmvc-mvc}/tests',
-        ]));
+        return del(config.deletes.concat(config.defaultdeletes));
     }));
     // CSS minify
     gulp.task('cssmin', function() {
