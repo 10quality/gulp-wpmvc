@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.3.5
+ * @version 1.3.6
  */
 
 /**
@@ -61,8 +61,8 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging/'+config.name+'/vendor/doctrine/{instantiator}',
             './builds/staging/'+config.name+'/vendor/symfony/{polyfill-ctype}/**/*',
             './builds/staging/'+config.name+'/vendor/symfony/{polyfill-ctype}',
-            './builds/staging/'+config.name+'/vendor/{myclabs,phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}/**/*',
-            './builds/staging/'+config.name+'/vendor/{myclabs,phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}',
+            './builds/staging/'+config.name+'/vendor/{phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}/**/*',
+            './builds/staging/'+config.name+'/vendor/{phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}',
         ];
     // Prepare individual assets compilations
     var assets = {css:[], js:[], sass:[]};
