@@ -8,7 +8,7 @@
  * @author Alejandro Mostajo <info@10quality.com>
  * @copyright 10 Quality
  * @license MIT
- * @version 1.3.6
+ * @version 1.3.7
  */
 
 /**
@@ -64,6 +64,19 @@ module.exports = function(gulp, config, wordpressOrg)
             './builds/staging/'+config.name+'/vendor/{phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}/**/*',
             './builds/staging/'+config.name+'/vendor/{phar-io,phpdocumentor,phpspec,phpunit,sebastian,theseer,webmozart}',
         ];
+    // Minification settings
+    if (!config.jsmin)
+        config.jsmin = ['./assets/js/**/*.js'];
+    if (!config.cssmin)
+        config.cssmin = ['./assets/css/**/*.css'];
+    if (!Array.isArray(config.jsmin))
+        throw new Error('"config.jsmin" must be an array.');
+    if (!Array.isArray(config.cssmin))
+        throw new Error('"config.cssmin" must be an array.');
+    if (config.jsminAppend && Array.isArray(config.jsminAppend))
+        config.jsmin = config.jsmin.concat(config.jsminAppend);
+    if (config.cssminAppend && Array.isArray(config.cssminAppend))
+        config.cssmin = config.cssmin.concat(config.cssminAppend);
     // Prepare individual assets compilations
     var assets = {css:[], js:[], sass:[]};
     // Webpack support
@@ -204,13 +217,13 @@ module.exports = function(gulp, config, wordpressOrg)
     }));
     // CSS minify
     gulp.task('cssmin', function() {
-        return gulp.src('./assets/css/**/*.css')
+        return gulp.src(config.cssmin)
             .pipe(cleanCSS({compatibility: 'ie8'}))
             .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/css'));
     });
     // JS minify
     gulp.task('jsmin', function() {
-        return gulp.src('./assets/js/**/*.js')
+        return gulp.src(config.jsmin)
             .pipe(jsmin())
             .pipe(gulp.dest('./builds/staging/'+config.name+'/assets/js'));
     });
