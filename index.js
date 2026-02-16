@@ -22,7 +22,7 @@ module.exports = function(gulp, config, wordpressOrg)
 {
     // Dependencies.
     if (!gulp) gulp = require('gulp');
-    var sass = require('gulp-sass');
+    var sass = require('gulp-sass')(require('sass'));
     var concat = require('gulp-concat');
     var jsmin = require('gulp-jsmin');
     var cleanCSS = require('gulp-clean-css');
