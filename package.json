@@ -1,6 +1,6 @@
 {
   "name": "@10quality/gulp-wpmvc",
-  "version": "1.4.1",
+  "version": "1.4.5-rc1",
   "description": "Gulp package for WordPress MVC development.",
   "scripts": {
     "test": "mocha tests/**/*.js"
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/10quality/gulp-wpmvc",
   "dependencies": {
-    "del": "^8.0.1",
+    "del": "^3.0.0",
     "gulp": "^4.0.2",
     "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.1",
@@ -35,5 +35,8 @@
   "private": false,
   "devDependencies": {
     "mocha": "^11.7.5"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }

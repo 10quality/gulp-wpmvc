@@ -1,0 +1,8 @@
+# Dependencies
+/node_modules
+/tests
+
+# Tmp files
+package-lock.json
+/build
+.DS_Store
