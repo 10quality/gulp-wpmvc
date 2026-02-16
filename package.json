@@ -1,13 +1,13 @@
 {
   "name": "@10quality/gulp-wpmvc",
-  "version": "1.4.5-rc1",
+  "version": "1.4.0",
   "description": "Gulp package for WordPress MVC development.",
   "scripts": {
     "test": "mocha tests/**/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/10quality/gulp-wpmvc.git"
+    "url": "git+https://github.com/10quality/gulp-wpmvc.git"
   },
   "keywords": [
     "mvc",
