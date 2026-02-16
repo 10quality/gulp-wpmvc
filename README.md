@@ -1,9 +1,9 @@
 # gulp-wpmvc
 
-Predefined gulp tasks for [WordPress MVC](https://www.wordpress-mvc.com/) (WPMVC).
+Predefined gulp tasks for [WordPress MVC](https://10quality.github.io/wpmvc/) (WPMVC).
 
 ## Requirements
-* node >= v0.12.0 <= 13
+* node >= v0.12.0 <= 24.x
 * npm >= v2.3.0
 
 ## Webpack
@@ -18,4 +18,4 @@ If experiencing issues with sass and other modules, use [nvm](https://github.com
 
 MIT license.
 
-(c) 2020 [10 Quality](https://www.10quality.com/).
+(c) 2020 [10 Quality](https://github.com/10quality).
