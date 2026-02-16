@@ -1,5 +1,5 @@
 {
-  "name": "gulp-wpmvc",
+  "name": "@10quality/gulp-wpmvc",
   "version": "1.4.0",
   "description": "Gulp package for WordPress MVC development.",
   "scripts": {
